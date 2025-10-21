@@ -4,46 +4,19 @@
     "dockerfile": "Dockerfile",
     "context": "."
   },
-
-  // Workspace inside container (repo root)
   "workspaceFolder": "/workspaces/apache-airflow-template",
-
-  // Standard VS Code user created in the Dockerfile
   "remoteUser": "vscode",
-
-  // ------------------------------------------------------------------
-  // Post-create setup (runs after container is built and started)
-  // ------------------------------------------------------------------
-  "postCreateCommand": "bash -lc 'source /workspaces/apache-airflow-template/airflow-venv/bin/activate && python --version && pip --version'",
-
-  // ------------------------------------------------------------------
-  // VS Code customizations
-  // ------------------------------------------------------------------
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-toolsai.jupyter",
-        "tamasfe.even-better-toml"
+        "ms-python.vscode-pylance"
       ],
       "settings": {
         "python.defaultInterpreterPath": "/workspaces/apache-airflow-template/airflow-venv/bin/python",
-        "python.terminal.activateEnvironment": true,
-        "python.analysis.typeCheckingMode": "basic",
-        "editor.formatOnSave": true,
-        "terminal.integrated.defaultProfile.linux": "bash"
+        "python.terminal.activateEnvironment": true
       }
-    }
-  },
-
-  // ------------------------------------------------------------------
-  // Optional container features
-  // ------------------------------------------------------------------
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": false,
-      "installOhMyZsh": false
     }
   }
 }
