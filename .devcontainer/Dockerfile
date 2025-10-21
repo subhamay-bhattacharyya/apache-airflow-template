@@ -6,6 +6,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       bash sudo ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash sudo ca-certificates git openssh-client \
+  && rm -rf /var/lib/apt/lists/*
+
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=1000
