@@ -3,8 +3,10 @@ FROM python:3.12-slim
 
 # Environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
-    VIRTUAL_ENV=/workspaces/apache-airflow-template/airflow-venv \
-    PATH="/workspaces/apache-airflow-template/airflow-venv/bin:$PATH"
+    REPO_NAME=apache-airflow-template \
+    WORKSPACE_DIR=/workspaces/${REPO_NAME} \
+    VIRTUAL_ENV=/workspaces/${REPO_NAME}/airflow-venv \
+    PATH="/workspaces/${REPO_NAME}/airflow-venv/bin:$PATH"
 
 # --------------------------------------------------------------------
 # Install minimal tools and create non-root user
@@ -22,17 +24,17 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
  && chmod 0440 /etc/sudoers.d/99-vscode
 
 # --------------------------------------------------------------------
-# Create workspace directory and the Python virtual environment
+# Create repo workspace directory and virtual environment
 # --------------------------------------------------------------------
-RUN mkdir -p /workspaces/apache-airflow-template
-WORKDIR /workspaces/apache-airflow-template
+RUN mkdir -p ${WORKSPACE_DIR}
+WORKDIR ${WORKSPACE_DIR}
 
 RUN python3 -m venv "${VIRTUAL_ENV}" \
  && echo "source ${VIRTUAL_ENV}/bin/activate" >> /etc/bash.bashrc
 
 # --------------------------------------------------------------------
-# Default configuration for VS Code / terminals
+# Default user and working directory
 # --------------------------------------------------------------------
 USER ${USERNAME}
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
-WORKDIR /workspaces/apache-airflow-template
+WORKDIR ${WORKSPACE_DIR}
