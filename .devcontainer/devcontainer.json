@@ -1,34 +1,49 @@
 {
-  "name": "Python 3.12 Dev (airflow-venv)",
+  "name": "Airflow Dev - Python 3.12 with airflow-venv",
   "build": {
     "dockerfile": "Dockerfile",
     "context": "."
   },
 
-  // The folder inside the container that maps to your repo
-  "workspaceFolder": "/workspace",
+  // Workspace inside container (repo root)
+  "workspaceFolder": "/workspaces/apache-airflow-template",
 
-  // Use the standard non-root user created in the Dockerfile
+  // Standard VS Code user created in the Dockerfile
   "remoteUser": "vscode",
 
-  // VS Code customization
+  // ------------------------------------------------------------------
+  // Post-create setup (runs after container is built and started)
+  // ------------------------------------------------------------------
+  "postCreateCommand": "bash -lc 'source /workspaces/apache-airflow-template/airflow-venv/bin/activate && python --version && pip --version'",
+
+  // ------------------------------------------------------------------
+  // VS Code customizations
+  // ------------------------------------------------------------------
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "ms-toolsai.jupyter"
+        "ms-toolsai.jupyter",
+        "tamasfe.even-better-toml"
       ],
       "settings": {
-        // Point to the venv created in the Dockerfile
-        "python.defaultInterpreterPath": "/workspace/airflow-venv/bin/python",
+        "python.defaultInterpreterPath": "/workspaces/apache-airflow-template/airflow-venv/bin/python",
         "python.terminal.activateEnvironment": true,
         "python.analysis.typeCheckingMode": "basic",
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
 
-  // Command to verify setup after the container is created
-  "postCreateCommand": "bash -lc 'source /workspace/airflow-venv/bin/activate && python --version && pip --version'"
+  // ------------------------------------------------------------------
+  // Optional container features
+  // ------------------------------------------------------------------
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "installOhMyZsh": false
+    }
+  }
 }
