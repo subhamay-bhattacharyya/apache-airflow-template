@@ -1,12 +1,14 @@
 # Dev Container: Python 3.12 + airflow-venv (auto-activated)
 FROM python:3.12-slim
 
-# Environment
+# Environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
-    VIRTUAL_ENV=/workspace/airflow-venv \
-    PATH="/workspace/airflow-venv/bin:$PATH"
+    VIRTUAL_ENV=/workspaces/apache-airflow-template/airflow-venv \
+    PATH="/workspaces/apache-airflow-template/airflow-venv/bin:$PATH"
 
-# Minimal tools and non-root user (VS Code convention)
+# --------------------------------------------------------------------
+# Install minimal tools and create non-root user
+# --------------------------------------------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
       bash sudo ca-certificates \
     && rm -rf /var/lib/apt/lists/*
@@ -19,12 +21,18 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
  && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/99-vscode \
  && chmod 0440 /etc/sudoers.d/99-vscode
 
-# Create the virtual environment and ensure auto-activation for all bash shells
-WORKDIR /workspace
+# --------------------------------------------------------------------
+# Create workspace directory and the Python virtual environment
+# --------------------------------------------------------------------
+RUN mkdir -p /workspaces/apache-airflow-template
+WORKDIR /workspaces/apache-airflow-template
+
 RUN python3 -m venv "${VIRTUAL_ENV}" \
  && echo "source ${VIRTUAL_ENV}/bin/activate" >> /etc/bash.bashrc
 
-# Default to the non-root user and workspace
+# --------------------------------------------------------------------
+# Default configuration for VS Code / terminals
+# --------------------------------------------------------------------
 USER ${USERNAME}
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
-WORKDIR /workspace
+WORKDIR /workspaces/apache-airflow-template
